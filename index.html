@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Who Said What? Reported Speech</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{--ink:#0b2545;--teal:#1b998b;--amber:#f2a541;--coral:#d9534f;--paper:#ffffff;--soft:#e8f5f3;--sand:#fff4e0;--pale:#f4f7fa;--line:#b8c4ce;--grey:#5a6b7b}
+  *{box-sizing:border-box}
+  body{margin:0;background:#e6ebef;color:var(--ink);font:16px/1.5 Calibri,"Segoe UI",system-ui,sans-serif;
+    -webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  input,textarea,select{-webkit-user-select:text;user-select:text;font:inherit;color:var(--ink)}
+  .sheet{max-width:900px;margin:18px auto;background:var(--paper);padding:0 0 24px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.08);position:relative;z-index:1;overflow:hidden}
+  #wm{position:fixed;inset:0;pointer-events:none;z-index:5;background-repeat:repeat}
+  .banner{background:var(--ink);color:#fff;padding:20px 30px;display:flex;justify-content:space-between;align-items:center;gap:14px}
+  .banner small{color:var(--amber);font-weight:700;letter-spacing:.04em;font-size:13px}
+  .banner h1{margin:2px 0 2px;font:700 28px Cambria,Georgia,serif}
+  .banner p{margin:0;color:#cfe9e6}
+  .badge{background:var(--amber);color:var(--ink);font-weight:700;border-radius:8px;padding:8px 12px;text-align:center;font-size:14px;white-space:nowrap}
+  .body{padding:6px 30px 0}
+  h2{font:700 20px Cambria,Georgia,serif;color:var(--ink);margin:26px 0 6px;background:var(--soft);border-left:6px solid var(--teal);padding:7px 12px;border-radius:0 6px 6px 0}
+  .tag{display:inline-block;font-size:12px;font-weight:700;background:var(--amber);color:var(--ink);border-radius:10px;padding:1px 9px;margin-left:8px;vertical-align:middle}
+  .intro{background:var(--pale);border-left:5px solid var(--amber);border-radius:6px;padding:10px 14px;margin:12px 0}
+  .intro ul{margin:4px 0 0;padding-left:20px}
+  .ids{display:grid;grid-template-columns:2fr 1.4fr 1fr;gap:10px;margin:14px 0 0}
+  label.f{display:block;font-size:13px;font-weight:700;color:var(--grey);margin-bottom:2px}
+  input[type=text],textarea,select{width:100%;border:1px solid var(--line);border-radius:6px;background:#fff;padding:7px 9px}
+  textarea{min-height:70px;resize:vertical}
+  .item{border-top:1px solid #dde4ea;padding:10px 0}
+  .item .q{margin:0 0 6px}
+  .num{font-weight:700;color:var(--teal)}
+  input.gap[type=text]{display:inline-block;width:140px;vertical-align:baseline;padding:3px 8px;border-bottom:2px solid var(--teal);border-radius:4px 4px 0 0}
+  .fb{font-size:14px;margin-top:4px;min-height:1.2em}
+  .ok{color:#1c7a50} .no{color:var(--coral)}
+  .claim{background:var(--pale);border-left:5px solid var(--teal);border-radius:6px;padding:8px 12px;margin:4px 0 8px;font-style:italic}
+  .row2{display:grid;grid-template-columns:290px 1fr;gap:10px}
+  .model{display:none;background:var(--sand);border-left:4px solid var(--amber);border-radius:4px;padding:6px 10px;margin-top:6px;font-size:15px}
+  .checklist{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;background:var(--pale);border-radius:8px;padding:10px 14px;margin:8px 0;font-size:15px}
+  .checklist div{display:flex;gap:7px;align-items:center}
+  .dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--line);display:inline-block;flex:none}
+  .dot.on{background:var(--teal);border-color:var(--teal)}
+  .count{font-size:13px;color:var(--grey);margin-top:2px}
+  button{font:700 15px Calibri,system-ui,sans-serif;border:none;border-radius:8px;padding:9px 15px;cursor:pointer}
+  .primary{background:var(--teal);color:#fff}
+  .ghost{background:#fff;border:1px solid var(--teal);color:var(--teal)}
+  .small{padding:5px 11px;font-size:13px}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  .score{font-weight:700;margin:6px 0 0}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0;align-items:center}
+  .foot{color:var(--grey);font-size:13px;text-align:center;margin-top:12px}
+  .saved{font-size:13px;color:var(--grey)}
+  @media(max-width:640px){.sheet{margin:0;border-radius:0}.body{padding:6px 14px 0}.banner{padding:16px 14px;flex-direction:column;align-items:flex-start}.ids{grid-template-columns:1fr}.row2{grid-template-columns:1fr}.checklist{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="wm" aria-hidden="true"></div>
+<div class="sheet">
+  <div class="banner">
+    <div><small>GRAMMAR · REPORTED SPEECH</small><h1>Who Said What?</h1><p>Reporting verbs, tense and stance: individual task</p></div>
+    <div class="badge">Individual<br>about 25 min</div>
+  </div>
+  <div class="body">
+  <div class="ids">
+    <div><label class="f" for="sName">Name</label><input type="text" id="sName" autocomplete="off"></div>
+    <div><label class="f" for="sClass">Class</label><input type="text" id="sClass" autocomplete="off"></div>
+    <div><label class="f" for="sDate">Date</label><input type="text" id="sDate" autocomplete="off"></div>
+  </div>
+  <div class="intro">
+    <b>How it works.</b>
+    <ul>
+      <li><b>Part A:</b> change what a spokesperson said into reported speech (a made-up country, so nobody is quoted wrongly).</li>
+      <li><b>Part B:</b> choose the reporting verb that shows the speaker's stance.</li>
+      <li><b>Part C:</b> write a short news paragraph about <b>your own article</b> from the group task.</li>
+      <li>Remember: a <b>past</b> reporting verb usually moves the tense back; a <b>present</b> one does not.</li>
+      <li>Copy and paste are switched off on purpose, so type everything yourself.</li>
+    </ul>
+  </div>
+
+  <h2>A. Change it to reported speech <span class="tag">8 items</span></h2>
+  <p>Valmora is an imaginary country. Type the missing word(s) so the reported sentence is correct.</p>
+  <div id="secA"></div>
+  <div class="btns"><button class="primary small" id="chkA" type="button">Check Part A</button><span class="score" id="scA"></span></div>
+
+  <h2>B. Choose the verb for the stance <span class="tag">5 situations</span></h2>
+  <p>Pick the reporting verb that best shows what the writer wants to suggest, then give a short reason. <span style="color:var(--grey)">(said and explained are neutral.)</span></p>
+  <div id="secB"></div>
+
+  <h2>C. Write your news paragraph <span class="tag">4 to 7 sentences</span></h2>
+  <p>Report what countries, officials or organizations <b>said, warned or claimed</b> in your group-task article. Use your own words, and do not invent quotes.</p>
+  <div class="ids" style="grid-template-columns:2fr 1.4fr">
+    <div><label class="f" for="artT">Article title</label><input type="text" id="artT" autocomplete="off"></div>
+    <div><label class="f" for="artS">Outlet and date</label><input type="text" id="artS" autocomplete="off"></div>
+  </div>
+  <div class="checklist" id="chkList">
+    <div><span class="dot" id="k1"></span> 5 different reporting verbs</div>
+    <div><span class="dot" id="k2"></span> at least 2 in the present (says, claims…)</div>
+    <div><span class="dot" id="k3"></span> a backshifted verb (had, would, could)</div>
+    <div><span class="dot" id="k4"></span> a shifted time word (that day, the day before…)</div>
+    <div><span class="dot" id="k5"></span> a reported question (asked whether / why…)</div>
+    <div><span class="dot" id="k6"></span> 4 to 7 sentences</div>
+  </div>
+  <textarea id="verdict" style="min-height:190px" placeholder="Type your paragraph here..."></textarea>
+  <div class="count" id="vCount">0 words · 0 sentences</div>
+  <div class="count" id="vVerbs"></div>
+
+  <div class="btns">
+    <button class="primary" id="pdf" type="button">Download as PDF</button>
+    <button class="ghost" id="clr" type="button">Clear all</button>
+    <span class="saved" id="saved"></span>
+  </div>
+  <p class="foot">Your name and the time are stamped on the page and the PDF • Submit the PDF as instructed</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var $=function(id){return document.getElementById(id)};
+  var KEY="reportedSpeechIndividual_v1";
+
+  /* [direct speech, before gap, after gap, accepted, hint] */
+  var A=[
+    ["We will lower the export tax.","The minister said that Valmora "," lower the export tax.",["would"],"Past reporting verb: will goes back one step."],
+    ["Our factories are running at full capacity.","The spokesperson explained that their factories "," running at full capacity.",["were"],"Past reporting verb: are goes back one step."],
+    ["We signed the agreement yesterday.","The ministry announced that it "," the agreement the day before.",["had signed"],"Simple past goes back to the past perfect."],
+    ["I cannot accept these conditions.","The envoy said that he "," accept those conditions.",["could not","couldn't","couldnt"],"can goes back to its past form (two words are fine)."],
+    ["We are meeting the delegation today.","The minister said they were meeting the delegation ",".",["that day"],"Time word: today changes after a past reporting verb."],
+    ["The talks will end tomorrow.","The spokesperson said the talks would end ",".",["the next day","the following day"],"Time word: tomorrow changes after a past reporting verb."],
+    ["Our exports have grown this year.","The ministry says that its exports "," grown this year.",["have"],"Present reporting verb: no backshift needed."],
+    ["Why did you delay the report?","The journalist asked why the minister "," the report.",["had delayed"],"Reported question: statement word order, and the tense goes back."]
+  ];
+  var VERBS=["said","claimed","admitted","warned","insisted","denied","declined","explained"];
+  /* [situation, accepted verbs, model] */
+  var B=[
+    ["A company says its new bottle is “fully eco-friendly”, but it publishes no data. You want to show you are not sure.",["claimed"],"Claimed signals doubt: the company said it, but it is not proven."],
+    ["A minister once said the shortage was small. Under pressure, he now accepts that it was much bigger.",["admitted"],"Admitted shows the speaker accepted something unwelcome, like a confession."],
+    ["Critics demand a change, but the president repeats again and again that the policy will stay.",["insisted"],"Insisted shows firm, repeated resistance to pressure."],
+    ["A reporter asks about the ban. The company's spokesperson will not answer.",["declined"],"Declined (to comment) reports a refusal politely and neutrally."],
+    ["A diplomat tells another country that new sanctions could follow if the talks fail.",["warned"],"Warned shows a possible negative consequence, in the speaker's own words."]
+  ];
+
+  function el(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e}
+  A.forEach(function(a,i){
+    var d=el("div","item");
+    d.innerHTML='<div class="claim">Direct: “'+a[0]+'”</div><p class="q"><span class="num">'+(i+1)+'.</span> '+a[1]+'<input type="text" class="gap" id="a'+i+'" autocomplete="off">'+a[2]+'</p><div class="fb" id="fa'+i+'"></div>';
+    $("secA").appendChild(d);
+  });
+  B.forEach(function(b,i){
+    var d=el("div","item");
+    var opts='<option value="">Choose a verb...</option>'+VERBS.map(function(v){return '<option value="'+v+'">'+v+'</option>'}).join("");
+    d.innerHTML='<p class="q"><span class="num">'+(i+1)+'.</span> The situation:</p><div class="claim">'+b[0]+'</div>'+
+      '<div class="row2"><div><label class="f" for="r'+i+'">My verb</label><select id="r'+i+'">'+opts+'</select></div>'+
+      '<div><label class="f" for="w'+i+'">My reason (a short sentence)</label><input type="text" id="w'+i+'" autocomplete="off"></div></div>'+
+      '<div class="btns"><button class="ghost small" type="button" id="sb'+i+'" disabled>Show a suggested view</button></div>'+
+      '<div class="model" id="sm'+i+'"></div>';
+    $("secB").appendChild(d);
+  });
+
+  var checks=0;
+  function norm(s){return String(s||"").toLowerCase().replace(/[^a-z0-9]/g,"")}
+  function okA(i){var v=norm($("a"+i).value);return A[i][3].some(function(x){return v===norm(x)})}
+  function gradeA(show){var n=0;A.forEach(function(a,i){var v=$("a"+i).value.trim(),f=$("fa"+i),ok=okA(i);if(ok)n++;
+    if(show){if(!v){f.className="fb";f.textContent=""}else if(ok){f.className="fb ok";f.textContent="✓ Correct"}else{f.className="fb no";f.textContent="✗ Try again. Hint: "+a[4]}}});return n}
+  $("chkA").onclick=function(){checks++;$("scA").textContent="Score: "+gradeA(true)+" / "+A.length;save()};
+  B.forEach(function(b,i){
+    function upd(){$("sb"+i).disabled=!($("r"+i).value&&$("w"+i).value.trim().length>=12)}
+    $("w"+i).addEventListener("input",upd);$("r"+i).addEventListener("change",upd);upd();
+    $("sb"+i).onclick=function(){var v=$("r"+i).value,ok=b[1].indexOf(v)>-1,m=$("sm"+i);
+      m.innerHTML='<b>'+(ok?'✓ Your verb fits. ':'Suggested verb: '+b[1][0]+'. ')+'</b>'+b[2]+(ok?'':' Your choice can still work if your reason is good.');m.style.display="block"};
+  });
+
+  /* ---------- paragraph checklist ---------- */
+  var L=[["say","said","says"],["tell","told","tells"],["announce","announced","announces"],["warn","warned","warns"],["claim","claimed","claims"],["admit","admitted","admits"],["deny","denied","denies"],["explain","explained","explains"],["criticize","criticized|criticised","criticizes|criticises"],["decline","declined","declines"],["insist","insisted","insists"],["argue","argued","argues"],["state","stated","statesthat"],["describe","described","describes"],["add","added","adds"],["reply","replied","replies"],["ask","asked","asks"],["urge","urged","urges"],["suggest","suggested","suggests"],["confirm","confirmed","confirms"],["complain","complained","complains"],["demand","demanded","demands"],["note","noted","notesthat"],["report","reported","reportsthat"]];
+  function fixPh(s){return s.replace("statesthat","states that").replace("notesthat","notes that").replace("reportsthat","reports that")}
+  function has(p){return new RegExp("\\b("+fixPh(p).replace(/ /g,"\\s+")+")\\b","i")}
+  var TIME=/\b(that day|the day before|the previous day|the next day|the following day|the month before|the previous month|the week before|the previous week|the following week|the following month|the year before|the previous year|the following year|that (monday|tuesday|wednesday|thursday|friday|saturday|sunday|week|month|year|morning|night|evening)|at that time|the week after|the month after)\b/i;
+  var RQ=/\b(asked|wanted to know|wondered|enquired|inquired)\b[^.!?]*\b(if|whether|why|what|how|when|where|who|which)\b/i;
+  function verdict(){
+    var t=$("verdict").value;
+    var words=(t.trim().match(/\S+/g)||[]).length;
+    var sents=(t.match(/[^.!?]+[.!?]+/g)||[]).length;if(sents===0&&words>0)sents=1;
+    var found=[],pres=0;
+    L.forEach(function(l){var p=has(l[1]).test(t),q=has(l[2]).test(t);if(p||q){found.push(l[0]+(q?" (present)":" (past)"));if(q)pres++}});
+    var back=/\b(had|would|could|might)\b/i.test(t),tm=TIME.test(t),rq=RQ.test(t);
+    function set(id,on){$(id).className="dot"+(on?" on":"")}
+    set("k1",found.length>=5);set("k2",pres>=2);set("k3",back);set("k4",tm);set("k5",rq);set("k6",sents>=4&&sents<=7);
+    $("vCount").textContent=words+" words · "+sents+" sentence"+(sents===1?"":"s");
+    $("vVerbs").textContent=found.length?("Reporting verbs found: "+found.join(", ")):"";
+    return {verbs:found.length,pres:pres,back:back,tm:tm,rq:rq,sents:sents,words:words};
+  }
+  $("verdict").addEventListener("input",verdict);
+
+  var timer=null,FIELD_IDS=["sName","sClass","sDate","artT","artS","verdict"];
+  A.forEach(function(_,i){FIELD_IDS.push("a"+i)}); B.forEach(function(_,i){FIELD_IDS.push("r"+i,"w"+i)});
+  function save(){
+    try{var d={checks:checks};FIELD_IDS.forEach(function(id){d[id]=$(id).value});
+      localStorage.setItem(KEY,JSON.stringify(d));var n=new Date();$("saved").textContent="Saved "+n.getHours()+":"+String(n.getMinutes()).padStart(2,"0")}catch(e){$("saved").textContent="Autosave unavailable"}
+  }
+  function load(){
+    try{var d=JSON.parse(localStorage.getItem(KEY)||"null");if(!d)return;
+      FIELD_IDS.forEach(function(id){if(id in d)$(id).value=d[id]});if(d.checks)checks=d.checks}catch(e){}
+  }
+  function queue(){clearTimeout(timer);timer=setTimeout(save,600)}
+  document.addEventListener("input",queue);document.addEventListener("change",queue);window.addEventListener("beforeunload",function(){save()});
+
+  function watermark(){
+    var name=$("sName").value.trim()||"Student",stamp=new Date().toLocaleString();
+    var c=document.createElement("canvas");c.width=420;c.height=260;var x=c.getContext("2d");
+    x.translate(210,130);x.rotate(-Math.PI/7);x.textAlign="center";x.fillStyle="rgba(11,37,69,0.10)";
+    x.font="bold 17px Helvetica,Arial,sans-serif";x.fillText(name,0,-6);x.font="12px Helvetica,Arial,sans-serif";x.fillText(stamp,0,14);
+    $("wm").style.backgroundImage="url("+c.toDataURL()+")";
+  }
+  $("sName").addEventListener("input",watermark);
+
+  ["copy","cut","paste","drop","dragstart","dragover","contextmenu","selectstart"].forEach(function(ev){
+    document.addEventListener(ev,function(e){var t=e.target;
+      if(ev==="selectstart"&&t&&(t.tagName==="INPUT"||t.tagName==="TEXTAREA"||t.tagName==="SELECT"))return;
+      e.preventDefault()},true)});
+  document.addEventListener("keydown",function(e){
+    if((e.ctrlKey||e.metaKey)&&["c","x","v","p","s","a"].indexOf((e.key||"").toLowerCase())>-1){
+      var t=e.target;if((e.key||"").toLowerCase()==="a"&&t&&(t.tagName==="TEXTAREA"||t.tagName==="INPUT"))return; e.preventDefault()}
+  },true);
+
+  $("clr").onclick=function(){
+    if(!confirm("Clear everything on this page?"))return;
+    FIELD_IDS.forEach(function(id){var e=$(id);if(e.tagName==="SELECT")e.selectedIndex=0;else e.value=""});
+    checks=0;$("scA").textContent="";
+    document.querySelectorAll(".fb").forEach(function(f){f.textContent=""});
+    document.querySelectorAll(".model").forEach(function(m){m.style.display="none"});
+    B.forEach(function(_,i){$("sb"+i).disabled=true});
+    verdict();save();watermark();
+  };
+
+  function clean(t){return String(t||"").replace(/[‘’]/g,"'").replace(/[“”]/g,'"').replace(/[–—]/g,"-").replace(/…/g,"...").replace(/[^\x09\x0A\x0D\x20-\x7E -ÿ]/g,"")}
+  $("pdf").onclick=function(){
+    save();var name=$("sName").value.trim();
+    if(!name){alert("Please enter your name first.");$("sName").focus();return}
+    if(!window.jspdf){alert("The PDF tool did not load. Check your connection, or use your browser Print > Save as PDF.");window.print();return}
+    var doc=new window.jspdf.jsPDF({unit:"pt",format:"a4"}),mx=52,W=595-mx*2,bottom=790,y=56,stamp=new Date().toLocaleString();
+    function ensure(h){if(y+h>bottom){doc.addPage();y=56}}
+    function head(t,size,rgb){ensure(size+16);doc.setFont("helvetica","bold");doc.setFontSize(size);doc.setTextColor.apply(doc,rgb||[11,37,69]);doc.text(clean(t),mx,y);y+=size+8}
+    function txt(t,size,rgb,bold){doc.setFont("helvetica",bold?"bold":"normal");doc.setFontSize(size||10.5);doc.setTextColor.apply(doc,rgb||[11,37,69]);
+      var Ls=doc.splitTextToSize(clean(t),W);Ls.forEach(function(l){ensure(15);doc.text(l,mx,y);y+=(size||10.5)*1.35});y+=3}
+    var sa=gradeA(false),v=verdict();
+    head("Who Said What? Reported Speech",19);
+    txt(name+"   |   "+($("sClass").value.trim()||"-")+"   |   "+($("sDate").value.trim()||"-")+"   |   Generated "+stamp,9.5,[90,107,123]);
+    y+=4;
+    head("A. Reported speech   Score "+sa+" / "+A.length+"   (checks used: "+checks+")",13,[27,153,139]);
+    A.forEach(function(a,i){var val=$("a"+i).value.trim();txt((i+1)+". "+a[1]+"["+(val||"?")+"]"+a[2],10,okA(i)?[28,122,80]:(val?[217,83,79]:[90,107,123]))});
+    y+=4;head("B. Choose the verb",13,[27,153,139]);
+    B.forEach(function(b,i){var r=$("r"+i).value;
+      txt((i+1)+". "+b[0],10,[90,107,123]);
+      txt("   Verb: "+(r||"(not answered)"),10.5,[11,37,69],true);
+      txt("   Reason: "+($("w"+i).value.trim()||"(not answered)"),10.5)});
+    y+=4;head("C. My news paragraph",13,[27,153,139]);
+    txt("Article: "+($("artT").value.trim()||"-")+"  ("+($("artS").value.trim()||"-")+")",10,[90,107,123]);
+    txt($("verdict").value.trim()||"(not answered)",10.5);
+    txt("Self-check - different reporting verbs: "+v.verbs+"; present: "+v.pres+"; backshift: "+(v.back?"yes":"no")+"; time word: "+(v.tm?"yes":"no")+"; reported question: "+(v.rq?"yes":"no")+"; sentences: "+v.sents+"; words: "+v.words,9.5,[90,107,123]);
+    var pages=doc.internal.getNumberOfPages();
+    for(var p=1;p<=pages;p++){
+      doc.setPage(p);
+      try{doc.setGState(new doc.GState({opacity:0.09}))}catch(e){}
+      doc.setFont("helvetica","bold");doc.setFontSize(26);doc.setTextColor(11,37,69);doc.text(clean(name),300,440,{align:"center",angle:35});
+      doc.setFontSize(12);doc.text(clean(stamp),300,462,{align:"center",angle:35});
+      try{doc.setGState(new doc.GState({opacity:1}))}catch(e){}
+      doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(90,107,123);doc.text(clean(name)+"  -  page "+p+" of "+pages,mx,820);
+    }
+    doc.save(name.replace(/[^a-z0-9]+/gi,"_")+"_Reported_Speech.pdf");
+  };
+
+  load();watermark();setInterval(watermark,60000);verdict();
+})();
+</script>
+</body>
+</html>
